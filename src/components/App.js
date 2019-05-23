@@ -19,6 +19,25 @@ class App extends Component {
       operation: '',
     };
 
+    this.labels = [
+      '7',
+      '8',
+      '9',
+      DIVIDE,
+      '4',
+      '5',
+      '6',
+      MULTI,
+      '1',
+      '2',
+      '3',
+      MINUS,
+      '0',
+      DOT,
+      EQUAL,
+      PLUS,
+    ];
+
     this.handleClick = this.handleClick.bind(this);
   }
 
@@ -72,22 +91,9 @@ class App extends Component {
         <h1>Calcolatrice REACT</h1>
         <div id="calculator">
           <Display value={this.state.display} />
-          <Button label="7" click={this.handleClick} />
-          <Button label="8" click={this.handleClick} />
-          <Button label="9" click={this.handleClick} />
-          <Button label={DIVIDE} click={this.handleClick} orange />
-          <Button label="4" click={this.handleClick} />
-          <Button label="5" click={this.handleClick} />
-          <Button label="6" click={this.handleClick} />
-          <Button label={MULTI} click={this.handleClick} orange />
-          <Button label="1" click={this.handleClick} />
-          <Button label="2" click={this.handleClick} />
-          <Button label="3" click={this.handleClick} />
-          <Button label={MINUS} click={this.handleClick} orange />
-          <Button label="0" click={this.handleClick} />
-          <Button label={DOT} click={this.handleClick} />
-          <Button label={EQUAL} click={this.handleClick} orange />
-          <Button label={PLUS} click={this.handleClick} orange />
+          {this.labels.map((label, index) => (
+            <Button key={'btn-' + index} label={label} click={this.handleClick} />
+          ))}
         </div>
       </div>
     );
@@ -110,17 +116,13 @@ class App extends Component {
     if (this.digits.length === 0 && digit === DOT) this.digits.push('0');
     if (this.digits.length === 1 && this.digits[0] === '0') {
       // ho solo lo zero
-      if (digit !== DOT) {
-        if (digit !== '0') {
-          // ho qualcosa di diverso da zero
-          this.digits[0] = digit;
-        }
-      } else {
-        this.digits.push(digit);
+      if (digit === '0') {
+        return false;
       }
     } else {
-      if (digit != DOT || (digit === DOT && !includes(this.digits, digit))) this.digits.push(digit);
+      if (!(digit != DOT || (digit === DOT && !includes(this.digits, digit)))) return false;
     }
+    this.digits.push(digit);
     this.setState({ display: this.digits.join('') });
   }
 }
