@@ -3,8 +3,9 @@ import Button from './Button';
 import Display from './Display';
 
 import { PLUS, MINUS, MULTI, DIVIDE, EQUAL, DOT } from '../config/const';
+
 import '../styles/App.scss';
-import { includes } from 'lodash';
+import { includes, sum, subtract, multiply, divide } from 'lodash';
 class App extends Component {
   constructor() {
     super();
@@ -27,13 +28,16 @@ class App extends Component {
     let result = '';
     switch (this.state.operation) {
       case PLUS:
-        result = this.operators[0] + this.operators[1];
+        result = sum(this.operators);
+        break;
       case MINUS:
-        result = this.operators[0] - this.operators[1];
+        break;
+        result = subtract(this.operators[0], this.operators[1]);
       case MULTI:
-        result = this.operators[0] * this.operators[1];
+        break;
+        result = multiply(this.operators[0], this.operators[1]);
       case DIVIDE:
-        result = this.operators[0] / this.operators[1];
+        result = divide(this.operators[0], this.operators[1]);
       default:
         break;
     }
@@ -103,10 +107,21 @@ class App extends Component {
 
   updateDigits(digit) {
     console.log('digit:', digit);
-    if (digit != DOT || (digit === DOT && !includes(this.digits, digit)));
-    this.digits.push(digit);
+    if (this.digits.length === 0 && digit === DOT) this.digits.push('0');
+    if (this.digits.length === 1 && this.digits[0] === '0') {
+      // ho solo lo zero
+      if (digit !== DOT) {
+        if (digit !== '0') {
+          // ho qualcosa di diverso da zero
+          this.digits[0] = digit;
+        }
+      } else {
+        this.digits.push(digit);
+      }
+    } else {
+      if (digit != DOT || (digit === DOT && !includes(this.digits, digit))) this.digits.push(digit);
+    }
     this.setState({ display: this.digits.join('') });
   }
 }
-
 export default App;
