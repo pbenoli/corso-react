@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Button from './Button';
 import Display from './Display';
 
-import { PLUS, MINUS, MULTI, DIVIDE, EQUAL, DOT } from '../config/const';
+import { PLUS, MINUS, MULTI, DIVIDE, EQUAL, DOT, RESET } from '../config/const';
 
 import '../styles/App.scss';
 import { includes, sum, subtract, multiply, divide } from 'lodash';
@@ -39,6 +39,7 @@ class App extends Component {
     ];
 
     this.handleClick = this.handleClick.bind(this);
+    this.resetCalculator = this.resetCalculator.bind(this);
   }
 
   doComputation(setTotal = false) {
@@ -90,6 +91,9 @@ class App extends Component {
       case EQUAL:
         this.doComputation();
         break;
+      case RESET:
+        this.reset();
+        break;
       case DOT:
       default:
         this.updateDigits(label);
@@ -101,13 +105,19 @@ class App extends Component {
       <div>
         <h1>Calcolatrice REACT</h1>
         <div id="calculator">
-          <Display value={this.state.display} />
+          <Display value={this.state.display} click={this.handleClick} />
           {this.labels.map((label, index) => (
             <Button key={'btn-' + index} label={label} click={this.handleClick} />
           ))}
         </div>
       </div>
     );
+  }
+
+  reset() {
+    this.operators = [];
+    this.digits = [];
+    this.setState({ display: 0, operation: '' });
   }
 
   setOperation(operation) {
@@ -139,6 +149,7 @@ class App extends Component {
     }
     this.digits.push(digit);
     this.setState({ display: this.digits.join('') });
+    // setState è un metodo react e devo fare il bind (vedi sopra) per permettere alla mia classe derivata di usare i metodi react
   }
 }
 export default App;
