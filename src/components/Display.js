@@ -4,7 +4,28 @@ import PropTypes from 'prop-types';
 import '../styles/Display.scss';
 
 const Display = props => {
-  return <div className="display">{props.value || '0'}</div>;
+  let size = 55;
+  const value = String(props.value);
+  const len = value.length;
+  console.log('len=', len, props.value);
+  // l'originale usa orbiton come font ()
+  switch (true) {
+    case len >= 13:
+      size = 32;
+      break;
+    case len >= 11:
+      size = 34;
+      break;
+    case len >= 8:
+      size = 40;
+      break;
+  }
+
+  return (
+    <div className="display">
+      <div style={{ fontSize: size }}>{value.substring(0, 14) || '0'}</div>
+    </div>
+  );
 };
 
 Display.propTypes = {

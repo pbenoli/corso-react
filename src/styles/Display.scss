@@ -3,7 +3,16 @@
   flex: 0 0 100%;
   height: 100px;
 
-  padding: 10px 20px;
-  text-align: right;
-  font-size: 72px;
+  font-weight: 400;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+
+  & > div {
+    // background-color: red;
+    font-size: 55px;
+    padding: 0 10px;
+  }
 }

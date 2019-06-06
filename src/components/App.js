@@ -41,38 +41,49 @@ class App extends Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
-  doComputation() {
-    this.operators.push(parseFloat(this.state.display));
-    console.log('switch this.state.operation=', this.state.operation);
-    let result = '';
+  doComputation(setTotal = false) {
+    if (this.operators.length !== 2 && !this.state.operation) return false;
+
+    const secondNumber = this.state.display;
+    this.operators.push(parseFloat(secondNumber));
+
+    console.log('doComputation', this.operators);
+    let total = this.getResult();
+    if (setTotal) this.operators.push(total);
+    this.operators = [];
+    this.digits = [];
+    this.setState({ display: total, operation: '' });
+  }
+
+  getResult() {
+    let result = 0;
     switch (this.state.operation) {
       case PLUS:
         result = sum(this.operators);
         break;
       case MINUS:
-        break;
         result = subtract(this.operators[0], this.operators[1]);
-      case MULTI:
+        //console.log('result=', result);
         break;
+      case MULTI:
         result = multiply(this.operators[0], this.operators[1]);
+        break;
       case DIVIDE:
         result = divide(this.operators[0], this.operators[1]);
       default:
         break;
     }
-    this.setState({ display: parseFloat(result), operation: '' });
-    this.operators[0] = this.operators[1];
-    this.operators.shift();
-    console.log('shift', this.operators);
+    return parseFloat(parseFloat(result.toPrecision(12)));
   }
 
   handleClick(label) {
     // Gestore del click
-    console.log('label;', label);
+    console.log('handleClick', label);
+
     switch (label) {
       case PLUS:
-      case MULTI:
       case MINUS:
+      case MULTI:
       case DIVIDE:
         this.setOperation(label);
         break;
@@ -100,12 +111,16 @@ class App extends Component {
   }
 
   setOperation(operation) {
-    console.log('operation:', operation);
+    // salvo il primo operando
+    const firstNumber = parseFloat(this.state.display);
+    if (this.operators.length === 1 && this.state.operation) {
+      this.doComputation(true);
+    } else {
+      this.operators.push(firstNumber);
+    }
+
     this.setState({ operation }); //se variabile ha lo stesso nome della chiave,
-    // non serve indicare la chiave
-    // ns // const firstNumber = this.state.display;
-    // aggiungo primo operando
-    this.operators.push(parseFloat(this.state.display));
+
     // svoda digits
     this.digits = [];
     console.log('this.operators=', this.operators, ' this.digits=', this.digits);
